@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+
+    tools {
+        jdk 'JDK11'
+        maven 'Maven3'
+    }
+
+    stages {
+
+        stage('Checkout Code') {
+            steps {
+                echo 'Checking out source code'
+                checkout scm
+            }
+        }
+
+        stage('Build & Run Tests') {
+            steps {
+                echo 'Running Selenium TestNG suite'
+                bat 'mvn clean test -DsuiteXmlFile=testng.xml'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline execution completed'
+        }
+
+        success {
+            echo 'BUILD SUCCESS – Automation suite passed'
+        }
+
+        failure {
+            echo 'BUILD FAILED – Check test failures'
+        }
+    }
+}
